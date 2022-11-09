@@ -49,10 +49,10 @@ int main()
     justAMap[{"Q1", 'b', "L"}] = {"Q1", "L"}; // push
     justAMap[{"Q1", '~', "L"}] = {"Q2", "L"}; // do nothing
 
-    justAMap[{"Q1", 'a', "~"}] = {"Q1", "L"}; // push
-    justAMap[{"Q1", 'b', "~"}] = {"Q1", "L"}; // push
-    justAMap[{"Q1", '0', "~"}] = {"Q1", "D"}; // push
-    justAMap[{"Q1", '1', "~"}] = {"Q1", "D"}; // push
+    justAMap[{"Q1", 'a', "z"}] = {"Q1", "L"}; // push
+    justAMap[{"Q1", 'b', "z"}] = {"Q1", "L"}; // push
+    justAMap[{"Q1", '0', "z"}] = {"Q1", "D"}; // push
+    justAMap[{"Q1", '1', "z"}] = {"Q1", "D"}; // push
 
 
     while(true)
@@ -85,7 +85,7 @@ void checkAccepted(string password, map <tuple<string, char, string>, pair<strin
 
     password.insert(0, "~");                          //make the password terminate with lambda
     myStack.push("z");                              //start the stack with z on the top
-    string c = (myStack.top());
+    string c = myStack.top();
 
 
     cout <<"   (" + currstate + " ," << password << " , "<<myStack.top() << " )\n";
@@ -95,13 +95,19 @@ void checkAccepted(string password, map <tuple<string, char, string>, pair<strin
     int j;                                            //for the loop
     int length = password.length();
 
+    string thetop;
+
     for(j = password.length()-1; j >= 0; j--)
     {
         cout << "\n";
 
-        t = m[make_tuple(currstate,password[j], c)];
+        thetop = myStack.top();
+        t = m[make_tuple(currstate,password[j], thetop)];
         nextstate = t.first;                          //defined from the map returns the next state
         c = t.second;                                 //desfine from the map returns what should happen on the stack (push or pop)
+
+ //       c=myStack.top();
+
 
         if(c == "L")
         {
@@ -120,10 +126,12 @@ void checkAccepted(string password, map <tuple<string, char, string>, pair<strin
             cout << "why am i here\n";
         }
 
+        thetop = myStack.top();
+
         password.pop_back();
         cout << "|- (" << nextstate << ", " << password <<" , " << myStack.top() << ")" ;
-        cout << "   c: " << c << "  " ;
-        cout << "password length: " << password.length() << "  \n";
+        cout << "    c: " << c << "  " ;
+        cout << "password length: " << password.length()<< " thetop: " << thetop << "  \n";
 
         currstate = nextstate;
     }
