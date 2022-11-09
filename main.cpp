@@ -11,41 +11,48 @@
 #include <map>
 #include <stack>
 #include <vector>
+#include <sstream>
+#include <string>
 
 using namespace std;
 
-void checkAccepted(string password , map <tuple<string, char, char>, pair<string,char>> m, stack<char> myStack);
+void checkAccepted(string password , map <tuple<string, char, string>, pair<string,string>> m, stack<string> myStack);
 
 int main()
 {
 
     string password;
 
-    map <tuple<string, char, char>, pair<string,char>> justAMap;
+    map <tuple<string, char, string>, pair<string,string>> justAMap;
 
-    stack<char> myStack;
+    stack<string> myStack;
 
-    justAMap[{"Q0", '1', 'z'}] = {"Q0", 'D'}; // push
-    justAMap[{"Q0", '0', 'z'}] = {"Q0", 'D'}; // push
-    justAMap[{"Q0", 'a', 'z'}] = {"Q0", 'L'}; // push
-    justAMap[{"Q0", 'b', 'z'}] = {"Q0", 'L'}; // push
-    justAMap[{"Q0", '1', 'D'}] = {"Q0", 'D'}; // push
-    justAMap[{"Q0", '0', 'D'}] = {"Q0", 'D'}; // push
-    justAMap[{"Q0", 'a', 'L'}] = {"Q0", 'L'}; // push
-    justAMap[{"Q0", 'b', 'L'}] = {"Q0", 'L'}; // push
-    justAMap[{"Q0", '1', 'L'}] = {"Q1", '~'}; // pop
-    justAMap[{"Q0", '0', 'L'}] = {"Q1", '~'}; // pop
-    justAMap[{"Q0", 'a', 'D'}] = {"Q1", '~'}; // pop
-    justAMap[{"Q0", 'b', 'D'}] = {"Q1", '~'}; // pop
-    justAMap[{"Q1", '1', 'L'}] = {"Q1", '~'}; // pop
-    justAMap[{"Q1", '0', 'L'}] = {"Q1", '~'}; // pop
-    justAMap[{"Q1", 'a', 'D'}] = {"Q1", '~'}; // pop
-    justAMap[{"Q1", 'b', 'D'}] = {"Q1", '~'}; // pop
-    justAMap[{"Q1", '1', 'D'}] = {"Q1", 'D'}; // push
-    justAMap[{"Q1", '0', 'D'}] = {"Q1", 'D'}; // push'
-    justAMap[{"Q1", 'a', 'L'}] = {"Q1", 'L'}; // push
-    justAMap[{"Q1", 'b', 'L'}] = {"Q1", 'L'}; // push
-    justAMap[{"Q1", '~', 'L'}] = {"Q2", 'L'}; // do nothing
+    justAMap[{"Q0", '1', "z"}] = {"Q0", "D"}; // push
+    justAMap[{"Q0", '0', "z"}] = {"Q0", "D"}; // push
+    justAMap[{"Q0", 'a', "z"}] = {"Q0", "L"}; // push
+    justAMap[{"Q0", 'b', "z"}] = {"Q0", "L"}; // push
+    justAMap[{"Q0", '1', "D"}] = {"Q0", "D"}; // push
+    justAMap[{"Q0", '0', "D"}] = {"Q0", "D"}; // push
+    justAMap[{"Q0", 'a', "L"}] = {"Q0", "L"}; // push
+    justAMap[{"Q0", 'b', "L"}] = {"Q0", "L"}; // push
+    justAMap[{"Q0", '1', "L"}] = {"Q1", "~"}; // pop
+    justAMap[{"Q0", '0', "L"}] = {"Q1", "~"}; // pop
+    justAMap[{"Q0", 'a', "D"}] = {"Q1", "~"}; // pop
+    justAMap[{"Q0", 'b', "D"}] = {"Q1", "~"}; // pop
+    justAMap[{"Q1", '1', "L"}] = {"Q1", "~"}; // pop
+    justAMap[{"Q1", '0', "L"}] = {"Q1", "~"}; // pop
+    justAMap[{"Q1", 'a', "D"}] = {"Q1", "~"}; // pop
+    justAMap[{"Q1", 'b', "D"}] = {"Q1", "~"}; // pop
+    justAMap[{"Q1", '1', "D"}] = {"Q1", "D"}; // push
+    justAMap[{"Q1", '0', "D"}] = {"Q1", "D"}; // push'
+    justAMap[{"Q1", 'a', "L"}] = {"Q1", "L"}; // push
+    justAMap[{"Q1", 'b', "L"}] = {"Q1", "L"}; // push
+    justAMap[{"Q1", '~', "L"}] = {"Q2", "L"}; // do nothing
+
+    justAMap[{"Q1", 'a', "~"}] = {"Q1", "L"}; // push
+    justAMap[{"Q1", 'b', "~"}] = {"Q1", "L"}; // push
+    justAMap[{"Q1", '0', "~"}] = {"Q1", "D"}; // push
+    justAMap[{"Q1", '1', "~"}] = {"Q1", "D"}; // push
 
 
     while(true)
@@ -68,7 +75,7 @@ int main()
     return 0;
 }
 
-void checkAccepted(string password, map <tuple<string, char, char>, pair<string,char>> m, stack<char> myStack)
+void checkAccepted(string password, map <tuple<string, char, string>, pair<string,string>> m, stack<string> myStack)
 {
 
     string currstate = "Q0";                       //always start at Q0 but will update after every itteration
@@ -76,52 +83,51 @@ void checkAccepted(string password, map <tuple<string, char, char>, pair<string,
     string finalState = "Q2";
 
 
-//    password.insert(0, "~");                          //make the password terminate with lambda
-    myStack.push('z');                              //start the stack with z on the top
-    char c = myStack.top();
+    password.insert(0, "~");                          //make the password terminate with lambda
+    myStack.push("z");                              //start the stack with z on the top
+    string c = (myStack.top());
 
 
+    cout <<"   (" + currstate + " ," << password << " , "<<myStack.top() << " )\n";
 
-    cout <<"   (" + currstate + " ,";
-    cout << password << " , ";
-    cout << myStack.top() << " )\n";
-
-    pair<string, char> t;
+    pair<string, string> t;
 
     int j;                                            //for the loop
     int length = password.length();
 
-
-    for(j = 0; j < password.length(); j++)
+    for(j = password.length()-1; j >= 0; j--)
     {
+        cout << "\n";
 
         t = m[make_tuple(currstate,password[j], c)];
         nextstate = t.first;                          //defined from the map returns the next state
         c = t.second;                                 //desfine from the map returns what should happen on the stack (push or pop)
 
-        if(c == 'L')
+        if(c == "L")
         {
-            myStack.push('L');
+            myStack.push("L");
         }
-        else if(c == 'D')
+        else if(c == "D")
         {
-            myStack.push('D');
+            myStack.push("D");
         }
-        else if(c == '~')
+        else if(c == "~")
         {
             myStack.pop();
         }
         else
         {
-
+            cout << "why am i here\n";
         }
 
         password.pop_back();
-        cout << "|- (" << nextstate << ", " << password <<" , " << myStack.top() << ") \n" ;
-        
+        cout << "|- (" << nextstate << ", " << password <<" , " << myStack.top() << ")" ;
+        cout << "   c: " << c << "  " ;
+        cout << "password length: " << password.length() << "  \n";
 
         currstate = nextstate;
     }
+
     
     if(currstate == finalState)
     {
