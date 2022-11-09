@@ -1,9 +1,10 @@
 //Name: David DeCosta
 //Date: 11/9/2022
 /*Program Description:
-                        This program implements a DFA that validates whether a password compiles
-                        given requirements. The requirements as of now are the DFA will accept
-                        E={a,b,0,1} and must be 3 to 4 characters long while containing atleast one letter.
+                        This program implements a NPDA that validates whether a password compiles
+                        given requirements. The requirements as of now are the NDPA will accept
+                        E={a,b,0,1}. The password can be arbitrarily long, will contain 1 letter and 1 digit,
+                        and must contain more letters than digits.
 */
 
 #include <iostream>
