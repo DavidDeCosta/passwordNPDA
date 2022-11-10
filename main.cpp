@@ -10,8 +10,6 @@
 #include <iostream>
 #include <map>
 #include <stack>
-#include <vector>
-#include <sstream>
 #include <string>
 
 using namespace std;
@@ -22,9 +20,7 @@ int main()
 {
 
     string password;
-
     map <tuple<string, char, string>, pair<string,string>> justAMap;
-
     stack<string> myStack;
 
     justAMap[{"Q0", '1', "z"}] = {"Q0", "D"}; // push
@@ -47,7 +43,7 @@ int main()
     justAMap[{"Q1", '0', "D"}] = {"Q1", "D"}; // push'
     justAMap[{"Q1", 'a', "L"}] = {"Q1", "L"}; // push
     justAMap[{"Q1", 'b', "L"}] = {"Q1", "L"}; // push
-    justAMap[{"Q1", '~', "L"}] = {"Q2", "L"}; // do nothing
+    justAMap[{"Q1", '~', "L"}] = {"Q2", "L"}; // do nothing because final state
 
     justAMap[{"Q1", 'a', "z"}] = {"Q1", "L"}; // push
     justAMap[{"Q1", 'b', "z"}] = {"Q1", "L"}; // push
@@ -59,7 +55,6 @@ int main()
     {
         cout << "Enter a password (Ctrl^C to end): \n";
         cin >> password;
-
         for(int i = 0; i < password.length();i++)
         {
             if(password[i] != 'a' && password[i] != 'b' && password[i] != '0' && password[i] !='1')
@@ -67,7 +62,6 @@ int main()
                 exit(0);
             }
         }
-
            checkAccepted(password, justAMap,myStack);
     }
 
@@ -81,29 +75,21 @@ void checkAccepted(string password, map <tuple<string, char, string>, pair<strin
     string currstate = "Q0";                       //always start at Q0 but will update after every itteration
     string nextstate = " ";                        //will be assigned by the make_tuple function return
     string finalState = "Q2";
-
-
+    string thetop;                                 //used to display the top of stack if need be
+    pair<string, string> t;
     password.insert(0, "~");                          //make the password terminate with lambda
     myStack.push("z");                              //start the stack with z on the top
     string c = myStack.top();
 
-
     cout <<"   (" + currstate + " ," << password << " , "<<myStack.top() << " )\n";
 
-    pair<string, string> t;
-
     int j;                                            //for the loop
-    int length = password.length();
-
-    string thetop;
-
     for(j = password.length()-1; j >= 0; j--)
     {
-
         thetop = myStack.top();
         t = m[make_tuple(currstate,password[j], thetop)];
         nextstate = t.first;                          //defined from the map returns the next state
-        c = t.second;                                 //desfine from the map returns what should happen on the stack (push or pop)
+        c = t.second;                                 //defined from the map returns what should happen on the stack (push or pop)
 
         if(c == "L")
         {
@@ -119,17 +105,16 @@ void checkAccepted(string password, map <tuple<string, char, string>, pair<strin
         }
         else
         {
-            cout << "why am i here\n";
+            cout << "unable to push or pop \n";
         }
 
         thetop = myStack.top();
-
-        stack<string> tempStack;          //used so i can traverse though the stack and display its contents without popping the original stack
+        stack<string> tempStack;                                   //used so i can traverse though the stack and display its contents without popping the original stack
         tempStack = myStack;
 
         password.pop_back();
         cout << "|- (" << nextstate << ", " << password <<" , ";
-        while(!tempStack.empty())
+        while(!tempStack.empty())                                   //this loop displays all the contents of the stack
         {
             cout << tempStack.top();
             tempStack.pop();
