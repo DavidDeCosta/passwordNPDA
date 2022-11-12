@@ -72,24 +72,31 @@ int main()
 void checkAccepted(string password, map <tuple<string, char, string>, pair<string,string>> m, stack<string> myStack)
 {
 
-    string currstate = "Q0";                       //always start at Q0 but will update after every itteration
-    string nextstate = " ";                        //will be assigned by the make_tuple function return
+    char tempChar = '~';
+
+    string currstate = "Q0";                                            //always start at Q0 but will update after every itteration
+    string nextstate = " ";                                             //will be assigned by the make_tuple function return
     string finalState = "Q2";
-    string thetop;                                 //used to display the top of stack if need be
+    string thetop;                                                      //used to display the top of stack if need be
     pair<string, string> t;
-    password.insert(0, "~");                          //make the password terminate with lambda
-    myStack.push("z");                              //start the stack with z on the top
+    password.insert(0, "~");                                            //make the password terminate with lambda
+    myStack.push("z");                                                  //start the stack with z on the top
     string c = myStack.top();
 
-    cout <<"   (" + currstate + " ," << password << " , "<<myStack.top() << " )\n";
+    cout <<"   (" + currstate + " , ";
+    for(int i =0; i <password.length();i++)
+    {
+        cout << password[i+1];
+    }
+    cout << " , "<<myStack.top() << " )\n";
 
-    int j;                                            //for the loop
+    int j;                                                               //for the loop
     for(j = password.length()-1; j >= 0; j--)
     {
         thetop = myStack.top();
         t = m[make_tuple(currstate,password[j], thetop)];
-        nextstate = t.first;                          //defined from the map returns the next state
-        c = t.second;                                 //defined from the map returns what should happen on the stack (push or pop)
+        nextstate = t.first;                                            //defined from the map returns the next state
+        c = t.second;                                                   //defined from the map returns what should happen on the stack (push or pop)
 
         if(c == "L")
         {
@@ -109,19 +116,29 @@ void checkAccepted(string password, map <tuple<string, char, string>, pair<strin
         }
 
         thetop = myStack.top();
-        stack<string> tempStack;                                   //used so i can traverse though the stack and display its contents without popping the original stack
+        stack<string> tempStack;                                            //used so i can traverse though the stack and display its contents without popping the original stack
         tempStack = myStack;
 
         password.pop_back();
-        cout << "|- (" << nextstate << ", " << password <<" , ";
-        while(!tempStack.empty())                                   //this loop displays all the contents of the stack
+        cout << "|- (" << nextstate << ", ";
+
+        for(int i =0 ; i < password.length(); i++)
+        {
+            cout << password[i+1];                                          //so the tilda isnt displayed while there are chars left in the string to be processed
+            
+        }
+
+        if(password.length() < 2)
+        {
+            cout << tempChar;                                               //once the whole string has been processed so that lambda is remaining
+        }
+        cout <<" , ";
+        while(!tempStack.empty())                                          //this loop displays all the contents of the stack
         {
             cout << tempStack.top();
             tempStack.pop();
         }
         cout  << " )\n";
-        //cout << "    c: " << c << "  " ;
-        //cout << "password length: " << password.length()<< " thetop: " << thetop << "  \n";
 
         currstate = nextstate;
     }
